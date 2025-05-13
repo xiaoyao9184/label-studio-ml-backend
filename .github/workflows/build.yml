@@ -103,10 +103,19 @@ jobs:
         env:
           IMAGE_NAME: "${{ env.IMAGE_NAME }}"
           TAGS: "${{ steps.version.outputs.image_version }},${{ steps.version.outputs.image_branch_version }}"
+          DOCKERHUB_USERNAME: "${{ vars.DOCKERHUB_USERNAME }}"
         with:
           script: |
             const raw_tags_input = process.env.TAGS;
-            const image_name = process.env.IMAGE_NAME;
+            let image_name = process.env.IMAGE_NAME;
+
+            const { repo, owner } = context.repo;
+            const { data: repoInfo } = await github.rest.repos.get({ owner, repo });
+            const isFork = repoInfo.fork === true;
+            if (isFork && process.env.DOCKERHUB_USERNAME) {
+              image_name = image_name.replace("heartexlabs", process.env.DOCKERHUB_USERNAME);
+              core.notice(`Using forked image name: ${image_name}`);
+            }
             
             const tags = raw_tags_input
               .split(',')
