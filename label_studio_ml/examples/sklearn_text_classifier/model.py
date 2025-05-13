@@ -162,8 +162,7 @@ class SklearnTextClassifier(LabelStudioMLBase):
             logger.info(f"Skip training: event {event} is not supported")
             return
 
-        project_id = data['annotation']['project']
-        tasks = self._get_tasks(project_id)
+        tasks = self._get_tasks(self.project_id)
 
         # Get the labeling configuration parameters like labels and input / output annotation format names
         config = self.get_label_studio_parameters()

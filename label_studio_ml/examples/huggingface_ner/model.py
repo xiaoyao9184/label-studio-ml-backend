@@ -143,8 +143,7 @@ class HuggingFaceNER(LabelStudioMLBase):
             logger.info(f"Skip training: event {event} is not supported")
             return
 
-        project_id = data['annotation']['project']
-        tasks = self._get_tasks(project_id)
+        tasks = self._get_tasks(self.project_id)
 
         if len(tasks) % self.START_TRAINING_EACH_N_UPDATES != 0 and event != 'START_TRAINING':
             logger.info(f"Skip training: {len(tasks)} tasks are not multiple of {self.START_TRAINING_EACH_N_UPDATES}")
